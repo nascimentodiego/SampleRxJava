@@ -13,15 +13,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import java.io.IOException;
+import java.util.List;
 
 import br.com.dfn.samplerxjava.R;
 import br.com.dfn.samplerxjava.api.request.GetEspnNews;
+import br.com.dfn.samplerxjava.model.Article;
 import br.com.dfn.samplerxjava.model.News;
 import retrofit2.Response;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final String TAG = MainActivity.class.getSimpleName();
+    private static final String TAG = "DIEGO";
     private GetEspnTask getEspnTask;
 
     @Override
@@ -40,8 +46,14 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        getEspnTask = new GetEspnTask();
-        getEspnTask.execute();
+        /*getEspnTask = new GetEspnTask();
+        getEspnTask.execute();*/
+
+        try {
+            callRxJava();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -64,6 +76,58 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public static void callRxJava() throws IOException {
+        final GetEspnNews getEspnNews = new GetEspnNews();
+
+        Observable<Response<News>> myObservable = Observable.create(
+                new Observable
+                        .OnSubscribe<Response<News>>() {
+                    @Override
+                    public void call(Subscriber<? super Response<News>> sub) {
+                        Log.d(TAG,"Observable::call");
+                        try {
+                            Response<News> news = getEspnNews.doRequest();
+                            Thread.sleep(5000);
+                            sub.onNext(news);
+                            sub.onCompleted();
+                        } catch (Exception e) {
+                            Log.d(TAG,"IOException:: "+ e);
+                            sub.onError(e);
+                        }
+
+                    }
+                }
+        ).subscribeOn(Schedulers.io());
+
+        Subscriber<Response<News>> mySubscriber = new Subscriber<Response<News>>() {
+            @Override
+            public void onCompleted() {
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG,"Subscriber::onError "+ e);
+            }
+
+            @Override
+            public void onNext(Response<News> newsResponse) {
+                News news =  newsResponse.body();
+                for (Article art:news.articles) {
+                    Log.d(TAG,"title-art: "+ art.title);
+                }
+
+                Log.d(TAG,"RESULT: "+ newsResponse.body());
+            }
+
+        };
+
+
+        myObservable.subscribe(mySubscriber);
+
+
     }
 
     private class GetEspnTask extends AsyncTask<Void, Void, News> {

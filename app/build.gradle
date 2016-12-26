@@ -32,5 +32,9 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'com.squareup.picasso:picasso:2.5.2'
 
+    //Rxjava
+    compile 'io.reactivex:rxjava:1.2.4'
+
+
     testCompile 'junit:junit:4.12'
 }
