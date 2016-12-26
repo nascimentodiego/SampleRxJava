@@ -14,8 +14,8 @@ public class GetEspnNews {
         ApiRequest apiRequest = ServiceClient.getBuilderRetrofit().create(ApiRequest.class);
         Response<News> execute;
 
-            Call<News> call = apiRequest.getEspnNews(ServiceClient.API_KEY);
-            execute = call.execute();
+        Call<News> call = apiRequest.getEspnNews(ServiceClient.API_KEY);
+        execute = call.execute();
         return execute;
     }
 
