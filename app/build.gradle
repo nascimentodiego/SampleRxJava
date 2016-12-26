@@ -40,6 +40,8 @@ dependencies {
     compile 'io.reactivex:rxjava:1.2.4'
     compile 'io.reactivex:rxandroid:1.2.1'
 
+    // RxJava Lifecycle
+
     // RxJava adapter for retrofit
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
 
