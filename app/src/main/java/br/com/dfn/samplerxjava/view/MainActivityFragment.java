@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.io.IOException;
 
 import br.com.dfn.samplerxjava.R;
 import br.com.dfn.samplerxjava.api.observables.EspnObservable;
@@ -21,6 +20,7 @@ public class MainActivityFragment extends Fragment {
     private static final String TAG = "DIEGO";
 
     private TextView txtResult;
+    private EspnObservable espnObservable;
     private Subscriber<News> mySubscriber;
 
     public MainActivityFragment() {
@@ -30,21 +30,21 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
+        espnObservable = new EspnObservable();
         txtResult = (TextView) root.findViewById(R.id.txtResult);
 
-        try {
-            if (savedInstanceState == null) {
-                registerSubscriber();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (savedInstanceState == null) {
+            registerSubscriber();
         }
 
         return root;
     }
 
-    public void registerSubscriber() throws IOException {
-        EspnObservable espnObservable = new EspnObservable();
+    public void registerSubscriber() {
+        if (espnObservable == null) {
+            espnObservable = new EspnObservable();
+        }
+
         mySubscriber = new Subscriber<News>() {
             @Override
             public void onCompleted() {
