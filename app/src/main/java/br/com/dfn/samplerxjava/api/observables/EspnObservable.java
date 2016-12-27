@@ -6,14 +6,12 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class EspnObservable extends GenericObservable {
-
-    private Observable<News> myObservable;
+public class EspnObservable<News> extends GenericObservable {
 
     public EspnObservable(){
         myObservable = apiRequest.getEspnNews2(ServiceClient.API_KEY)
                 .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
+                .observeOn(AndroidSchedulers.mainThread()).cache();
     }
 
     public Observable<News> getObservable(){

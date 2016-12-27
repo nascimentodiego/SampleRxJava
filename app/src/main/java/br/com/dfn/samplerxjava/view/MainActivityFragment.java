@@ -8,16 +8,24 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.trello.rxlifecycle.RxLifecycle;
+import com.trello.rxlifecycle.android.ActivityEvent;
+import com.trello.rxlifecycle.android.FragmentEvent;
 
 import br.com.dfn.samplerxjava.R;
 import br.com.dfn.samplerxjava.api.observables.EspnObservable;
 import br.com.dfn.samplerxjava.model.Article;
 import br.com.dfn.samplerxjava.model.News;
+import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
+import rx.observers.TestSubscriber;
+import rx.subjects.BehaviorSubject;
 
 public class MainActivityFragment extends Fragment {
 
     private static final String TAG = "DIEGO";
+
 
     private TextView txtResult;
     private EspnObservable espnObservable;
@@ -25,6 +33,7 @@ public class MainActivityFragment extends Fragment {
 
     public MainActivityFragment() {
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -66,14 +75,12 @@ public class MainActivityFragment extends Fragment {
             }
 
         };
-
         espnObservable.getObservable().subscribe(mySubscriber);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
+    public void onDestroyView() {
+        super.onDestroyView();
         if (mySubscriber != null && mySubscriber.isUnsubscribed()) {
             mySubscriber.unsubscribe();
         }

@@ -6,7 +6,7 @@ import br.com.dfn.samplerxjava.api.ServiceClient;
 import rx.Observable;
 
 public abstract class GenericObservable<T>  {
-    private Observable<T> myObservable;
+    protected Observable<T> myObservable;
     protected ApiRequest apiRequest;
 
     public GenericObservable() {
