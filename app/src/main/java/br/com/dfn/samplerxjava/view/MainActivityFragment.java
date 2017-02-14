@@ -8,19 +8,23 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.trello.rxlifecycle.RxLifecycle;
-import com.trello.rxlifecycle.android.ActivityEvent;
-import com.trello.rxlifecycle.android.FragmentEvent;
+import java.util.List;
 
 import br.com.dfn.samplerxjava.R;
 import br.com.dfn.samplerxjava.api.observables.EspnObservable;
+import br.com.dfn.samplerxjava.api.observables.GetMovie;
+import br.com.dfn.samplerxjava.api.observables.GetPeople;
 import br.com.dfn.samplerxjava.model.Article;
 import br.com.dfn.samplerxjava.model.News;
+import br.com.dfn.samplerxjava.model.startwars.Actor;
+import br.com.dfn.samplerxjava.model.startwars.Movie;
+import br.com.dfn.samplerxjava.model.startwars.PeopleResult;
 import rx.Observable;
-import rx.Observer;
+import rx.Scheduler;
 import rx.Subscriber;
-import rx.observers.TestSubscriber;
-import rx.subjects.BehaviorSubject;
+import rx.functions.Action1;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class MainActivityFragment extends Fragment {
 
@@ -28,8 +32,12 @@ public class MainActivityFragment extends Fragment {
 
 
     private TextView txtResult;
-    private EspnObservable espnObservable;
-    private Subscriber<News> mySubscriber;
+  /*  private EspnObservable espnObservable;
+    private Subscriber<News> mySubscriber;*/
+
+    private GetPeople getPeopleObservable;
+    private Subscriber<Actor> myPeopleSubscriber;
+
 
     public MainActivityFragment() {
     }
@@ -39,22 +47,55 @@ public class MainActivityFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_main, container, false);
-        espnObservable = new EspnObservable();
         txtResult = (TextView) root.findViewById(R.id.txtResult);
 
+//        espnObservable = new EspnObservable();
+        getPeopleObservable = new GetPeople();
+
         if (savedInstanceState == null) {
-            registerSubscriber();
+//            registerSubscriber();
+            registerSubscribeStarWars();
         }
 
         return root;
     }
 
-    public void registerSubscriber() {
-        if (espnObservable == null) {
-            espnObservable = new EspnObservable();
-        }
+    public void registerSubscribeStarWars() {
+        myPeopleSubscriber = new Subscriber<Actor>() {
+            @Override
+            public void onCompleted() {
+//                Toast.makeText(App.getContext(),"onCompleted",Toast.LENGTH_LONG).show();
+            }
 
-        mySubscriber = new Subscriber<News>() {
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "Subscriber::onError " + e);
+            }
+
+            @Override
+            public void onNext(Actor result) {
+               /* for (Actor actor : result.films) {
+                    Log.d(TAG, "actor: " + actor.name);
+                }*/
+            }
+
+        };
+       /* getPeopleObservable
+                .getObservable()
+                .subscribe();*/
+//                .subscribe(myPeopleSubscriber);
+
+        new GetMovie().getObservable().subscribe(new Action1<Movie>() {
+            @Override
+            public void call(Movie movie) {
+                Log.d(TAG, "movie: " + movie.title);
+            }
+        });
+    }
+
+
+    public void registerSubscriber() {
+      /*  mySubscriber = new Subscriber<News>() {
             @Override
             public void onCompleted() {
 //                Toast.makeText(App.getContext(),"onCompleted",Toast.LENGTH_LONG).show();
@@ -75,14 +116,14 @@ public class MainActivityFragment extends Fragment {
             }
 
         };
-        espnObservable.getObservable().subscribe(mySubscriber);
+        espnObservable.getObservable().subscribe(mySubscriber);*/
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mySubscriber != null && mySubscriber.isUnsubscribed()) {
-            mySubscriber.unsubscribe();
+        if (myPeopleSubscriber != null && myPeopleSubscriber.isUnsubscribed()) {
+            myPeopleSubscriber.unsubscribe();
         }
     }
 }
