@@ -61,36 +61,32 @@ public class MainActivityFragment extends Fragment {
     }
 
     public void registerSubscribeStarWars() {
-        myPeopleSubscriber = new Subscriber<Actor>() {
-            @Override
-            public void onCompleted() {
-//                Toast.makeText(App.getContext(),"onCompleted",Toast.LENGTH_LONG).show();
-            }
 
-            @Override
-            public void onError(Throwable e) {
-                Log.d(TAG, "Subscriber::onError " + e);
-            }
-
-            @Override
-            public void onNext(Actor result) {
-               /* for (Actor actor : result.films) {
-                    Log.d(TAG, "actor: " + actor.name);
-                }*/
-            }
-
-        };
-       /* getPeopleObservable
+        getPeopleObservable
                 .getObservable()
-                .subscribe();*/
-//                .subscribe(myPeopleSubscriber);
+                .subscribe(new Subscriber<PeopleResult>() {
+                    @Override
+                    public void onCompleted() {
+                        Log.d(TAG, "onCompleted");
+                    }
 
-        new GetMovie().getObservable().subscribe(new Action1<Movie>() {
+                    @Override
+                    public void onError(Throwable e) {
+                        Log.d(TAG, "Throwable " + e.toString());
+                    }
+
+                    @Override
+                    public void onNext(PeopleResult result) {
+                        Log.d(TAG, "PeopleResult[FINISH]: " + result.toString());
+                    }
+                });
+
+        /*new GetMovie().getObservable().subscribe(new Action1<Movie>() {
             @Override
             public void call(Movie movie) {
                 Log.d(TAG, "movie: " + movie.title);
             }
-        });
+        });*/
     }
 
 

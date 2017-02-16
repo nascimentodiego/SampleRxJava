@@ -4,7 +4,6 @@ import br.com.dfn.samplerxjava.api.ApiRequest;
 import br.com.dfn.samplerxjava.api.ServiceClient;
 import br.com.dfn.samplerxjava.model.startwars.Movie;
 import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 public class GetMovie extends GenericObservable  {
@@ -14,10 +13,7 @@ public class GetMovie extends GenericObservable  {
 
     public GetMovie() {
         this.apiRequest = ServiceClient.getBuilderStarWarsRetrofit().create(ApiRequest.class);
-
-        myObservable = apiRequest.getMovie("6")
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread());
+        myObservable = apiRequest.getMovie("6").subscribeOn(Schedulers.io());
     }
 
 

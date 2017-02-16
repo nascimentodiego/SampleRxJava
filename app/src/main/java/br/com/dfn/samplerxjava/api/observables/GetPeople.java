@@ -45,7 +45,7 @@ public class GetPeople extends GenericObservable {
                     public void call(Actor actor) {
                         Log.d(TAG, "--------------------- 2º Transformation: -------------------------- ");
                         for (String urlFilm : actor.films) {
-                            Log.d(TAG, "urlFilm: " + urlFilm);
+//                            Log.d(TAG, "urlFilm: " + urlFilm);
                         }
                     }
                 })
@@ -55,20 +55,16 @@ public class GetPeople extends GenericObservable {
                         return Observable.from(result.films);
                     }
                 })
+                .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<String, Observable<Movie>>() {
                     @Override
                     public Observable<Movie> call(String urlFilm) {
                         String filmId = formatString(urlFilm);
+                        Log.d(TAG, "urlFilm2: " + urlFilm);
                         return apiRequest.getMovie(filmId);
                     }
                 })
-                .subscribeOn(Schedulers.io())
-                .doOnNext(new Action1<Movie>() {
-                    @Override
-                    public void call(Movie movie) {
-                        Log.d(TAG, "movie: " + movie.title);
-                    }
-                }).doOnError(new Action1<Throwable>() {
+                .doOnError(new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         Log.d(TAG, "throwable: " + throwable.getMessage());
