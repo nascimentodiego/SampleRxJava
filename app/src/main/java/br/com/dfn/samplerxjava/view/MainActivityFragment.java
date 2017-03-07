@@ -2,6 +2,7 @@ package br.com.dfn.samplerxjava.view;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.util.DebugUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -64,22 +65,9 @@ public class MainActivityFragment extends Fragment {
 
         getPeopleObservable
                 .getObservable()
-                .subscribe(new Subscriber<PeopleResult>() {
-                    @Override
-                    public void onCompleted() {
-                        Log.d(TAG, "onCompleted");
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Log.d(TAG, "Throwable " + e.toString());
-                    }
-
-                    @Override
-                    public void onNext(PeopleResult result) {
-                        Log.d(TAG, "PeopleResult[FINISH]: " + result.toString());
-                    }
-                });
+                .subscribe(o -> {},
+                        throwable -> {},
+                        () -> {});
 
         /*new GetMovie().getObservable().subscribe(new Action1<Movie>() {
             @Override
